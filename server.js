@@ -21,19 +21,10 @@ const app = express();
 // Set up constants for PORT and MONGO_URI
 const PORT = process.env.PORT || 5000;
 const MONGO_URI = process.env.MONGO_URI;
-const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000"; // Fallback for local development
 
 // Middleware configuration
 app.use(cors({
-  origin: (origin, callback) => {
-    // Allow requests with no origin, like mobile apps or curl requests
-    if (!origin) return callback(null, true);
-    if (origin === CLIENT_URL) {
-      return callback(null, true);
-    } else {
-      return callback(new Error('Not allowed by CORS'));
-    }
-  },
+  origin: "*",  // Allows all origins
   methods: ["GET", "POST", "DELETE", "PUT"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,  // Allow cookies or authorization headers
@@ -67,5 +58,4 @@ app.use((err, req, res, next) => {
 // Start the server on the defined port
 app.listen(PORT, () => {
   console.log(`Server is now running on port ${PORT}`);
-  console.log(`CORS is enabled for: ${CLIENT_URL}`);
 });
