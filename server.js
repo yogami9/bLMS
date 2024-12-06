@@ -25,7 +25,15 @@ const CLIENT_URL = process.env.CLIENT_URL || "http://localhost:3000"; // Fallbac
 
 // Middleware configuration
 app.use(cors({
-  origin: CLIENT_URL,
+  origin: (origin, callback) => {
+    // Allow requests with no origin, like mobile apps or curl requests
+    if (!origin) return callback(null, true);
+    if (origin === CLIENT_URL) {
+      return callback(null, true);
+    } else {
+      return callback(new Error('Not allowed by CORS'));
+    }
+  },
   methods: ["GET", "POST", "DELETE", "PUT"],
   allowedHeaders: ["Content-Type", "Authorization"],
   credentials: true,  // Allow cookies or authorization headers
